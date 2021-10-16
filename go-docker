@@ -1,0 +1,231 @@
+
+ql repo https://github.com/colakele/jd.git "jd_" "" "^jd[^_]|USER|get"
+
+if (text.trim().indexOf("资产变动通知") < 0) {
+
+console.log("*********************************");
+
+console.log("检测到为非资产通知，已禁用此条通知，此拦截只对PushPlus有效~~");
+
+console.log("*********************************");
+
+return text.indexOf("资产变动通知");
+
+}
+
+#安装docker
+
+curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
+
+systemctl enable docker
+
+systemctl start docker
+
+#chroot
+
+servicectl
+
+serviced
+
+#安装docker-compose
+
+sudo curl -L "https://ghproxy.com/github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose  
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+docker-compose --version
+
+#安装git
+
+yum install git
+
+......................
+
+#安装go
+
+#提示:golang.google.cn是需要挂代理的，所以我们先下载到本地，上传网盘，分享链接，去via浏览器下载提取直链，//有代理的就可以省略
+
+#把下面换成这样wget "提取的直链" -O go1.16.7.linux-amd64.tar.gz
+
+cd /usr/local && wget https://golang.google.cn/dl/go1.16.7.linux-amd64.tar.gz -O go1.16.7.linux-amd64.tar.gz
+
+tar -xvzf go1.16.7.linux-amd64.tar.gz
+
+vi /etc/profile
+
+export GO111MODULE=on
+
+export GOPROXY=https://goproxy.cn
+
+export GOROOT=/usr/local/go
+
+export GOPATH=/usr/local/go/path
+
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+source /etc/profile
+
+go env
+
+……………………
+
+#拉取傻妞后并拉取jd_cookie
+
+cd
+
+git clone https://ghproxy.com/github.com/cdle/sillyGirlsillyGirl
+
+cd sillyGirl/develop
+
+git clone https://ghproxy.com/github.com/ufuckee/jd_cookiejd_cookie
+
+cd ../
+
+vi dev.go #黏贴如下内容
+
+package main
+
+import (
+
+ _ "github.com/cdle/sillyGirl/develop/qinglong"
+
+ _ "github.com/cdle/sillyGirl/develop/jd_cookie"
+
+ _ "github.com/cdle/sillyGirl/im/qq"
+
+ _ "github.com/cdle/sillyGirl/im/tg"
+
+ _ "github.com/cdle/sillyGirl/im/wxmp"
+
+)
+
+#按ESC 输入 :wq 保存退出
+
+go build
+
+#
+
+#Tim扫码登录
+
+./sillyGirl
+
+#登录后按 CTRL+c 退出进程
+
+#后台运行傻妞
+
+./sillyGirl -d
+
+#登录后，QQ自己给自己发如下命令
+
+#设置傻妞机器人管理员QQ
+
+set qq masters QQ1&QQ2&QQ3
+
+#设置对接青龙面板[Client ID]和[Client Secret]到剪切板保存备用
+
+#登录青龙面板&&系统设置&&应用设置&&添加应用&&保存&&复制
+
+set qinglong host http://110.40.176.228:5700
+
+set qinglong client_id rCULlK_xi09k
+
+set qinglong client_secret cKiAgJc2Vs_9xCd92IXI_vC1
+
+#设置短信接口
+
+set jd_cookie address http://110.40.176.228:5701
+
+set qinglong host http://111.67.207.84:5700
+
+set qinglong client_id ZnZGY4Zlq-JL
+
+set qinglong client_secret Ks_qtr6__i4J2Zx3fC8DVQr9
+
+#设置短信接口
+
+set jd_cookie address http://111.67.207.84:5701
+
+……
+
+#安装短信青龙
+
+#安装短信青龙前配置
+
+mkdir jd-qinglong
+
+cd jd-qinglong
+
+wget -O docker-compose.yml https://ghproxy.com/https://raw.githubusercontent.com/rubyangxg/jd-qinglong/master/docker-compose-allinone.yml
+
+wget -O env.properties https://ghproxy.com/https://raw.githubusercontent.com/rubyangxg/jd-qinglong/master/env.template.properties
+
+#安装并启动短信青龙
+
+docker-compose up -d
+
+docker-compose logs -f
+
+……………………
+
+#微信公众号设置
+
+1.去微信公众平台申请订阅号[百度搜索怎么申请]
+
+2.申请后点击左上角三条杠，滑倒最下面，点击设置与开发
+
+3，点击开发下面的[基本设置]
+
+4,有个开发者ID(AppID):记录一下
+
+5，申请开发者密码(AppSecret):记录一下
+
+6,点击修改配置
+
+EncodingAESKey:[点击随机生成][记录一下]
+
+URL:填  http://搭建傻妞的ip/wx
+
+#用机器人管理QQ给机器人发如下命令
+
+#开傻妞对接URL的端口80
+
+set sillyGirl port 80
+
+#AppID固定的
+
+set wxmp app_id [AppID]
+
+#下面这些自定义
+
+set wxmp app_secret [AppSecret]
+
+set wxmp encoding_aes_key [EncodingAESKey]
+
+set wxmp token [随便字母/数字]
+
+#给机器人发送后返回网页
+
+#网页端设置，先发后填
+
+就是你发给QQ的内容
+
+就是这么简单
+
+#设置开机自启
+
+vi /root/jd-qinglong/zq.sh
+
+cd /root/sillyGirl
+
+./sillyGirl -d
+
+cd /root/jd-qinglong
+
+docker-compose up -d
+
+docker-compose logs -f
+
+vi /etc/rc.local
+
+bash /root/jd-qinglong/zq.sh
+
